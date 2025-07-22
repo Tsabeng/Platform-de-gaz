@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block contenu %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Inscription</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ formulaire.username.id_for_label }}" class="form-label">Nom d'utilisateur</label>
+                        {{ formulaire.username }}
+                        {% if formulaire.username.errors %}
+                            <div class="text-danger">{{ formulaire.username.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ formulaire.email.id_for_label }}" class="form-label">Email</label>
+                        {{ formulaire.email }}
+                        {% if formulaire.email.errors %}
+                            <div class="text-danger">{{ formulaire.email.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ formulaire.password1.id_for_label }}" class="form-label">Mot de passe</label>
+                        {{ formulaire.password1 }}
+                        {% if formulaire.password1.errors %}
+                            <div class="text-danger">{{ formulaire.password1.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ formulaire.password2.id_for_label }}" class="form-label">Confirmation du mot de passe</label>
+                        {{ formulaire.password2 }}
+                        {% if formulaire.password2.errors %}
+                            <div class="text-danger">{{ formulaire.password2.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ formulaire.adresse.id_for_label }}" class="form-label">Adresse</label>
+                        {{ formulaire.adresse }}
+                        {% if formulaire.adresse.errors %}
+                            <div class="text-danger">{{ formulaire.adresse.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Rôle</label>
+                        <select name="role" id="role" class="form-select" required>
+                            <option value="client">Client</option>
+                            <option value="depot">Dépôt</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="depot_fields" style="display: none;">
+                        <label for="nom_depot" class="form-label">Nom du dépôt</label>
+                        <input type="text" name="nom_depot" id="nom_depot" class="form-control">
+                        <label for="{{ formulaire.telephone.id_for_label }}" class="form-label mt-3">Numéro de téléphone</label>
+                        {{ formulaire.telephone }}
+                        {% if formulaire.telephone.errors %}
+                            <div class="text-danger">{{ formulaire.telephone.errors }}</div>
+                        {% endif %}
+                        <label for="{{ formulaire.whatsapp.id_for_label }}" class="form-label mt-3">Numéro WhatsApp</label>
+                        {{ formulaire.whatsapp }}
+                        {% if formulaire.whatsapp.errors %}
+                            <div class="text-danger">{{ formulaire.whatsapp.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-primary">S'inscrire</button>
+                    <a href="{% url 'login' %}" class="btn btn-secondary">Connexion</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById('role').addEventListener('change', function() {
+        document.getElementById('depot_fields').style.display = this.value === 'depot' ? 'block' : 'none';
+    });
+</script>
+{% endblock %}

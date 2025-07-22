@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block contenu %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">{{ depot.nom }}</h3>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title">Informations du dépôt</h4>
+                <p><strong>Adresse :</strong> {{ depot.adresse }}</p>
+                <p><strong>Email :</strong> {{ depot.proprietaire.email }}</p>
+                {% if depot.telephone %}
+                    <p><strong>Téléphone :</strong> {{ depot.telephone }}</p>
+                {% endif %}
+                {% if depot.whatsapp %}
+                    <p><strong>WhatsApp :</strong> <a href="https://wa.me/{{ depot.whatsapp|urlencode }}" target="_blank">{{ depot.whatsapp }}</a></p>
+                {% endif %}
+                <hr>
+                <h4 class="card-title">Types de gaz disponibles</h4>
+                {% if types_gaz %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Nom du gaz</th>
+                                    <th>Quantité en stock</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for type_gaz in types_gaz %}
+                                <tr>
+                                    <td>{{ type_gaz.nom }}</td>
+                                    <td>{{ type_gaz.quantite_stock }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        Aucun gaz disponible dans ce dépôt.
+                    </div>
+                {% endif %}
+                <a href="{% url 'recherche_gaz' %}" class="btn btn-secondary mt-3">Retour à la recherche</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block contenu %}
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <h2 class="mb-4">Types de gaz dans votre dépôt</h2>
+        <a href="{% url 'ajouter_type_gaz' %}" class="btn btn-primary mb-4">Ajouter un type de gaz</a>
+        {% if types_gaz %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Nom</th>
+                            <th>Disponible</th>
+                            <th>Quantité</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for type_gaz in types_gaz %}
+                        <tr>
+                            <td>{{ type_gaz.nom }}</td>
+                            <td>{{ type_gaz.est_disponible|yesno:"Oui,Non" }}</td>
+                            <td>{{ type_gaz.quantite_stock }}</td>
+                            <td>
+                                <a href="{% url 'modifier_stock' type_gaz.pk %}" class="btn btn-warning btn-sm">Modifier le stock</a>
+                                <a href="{% url 'supprimer_type_gaz' type_gaz.pk %}" class="btn btn-danger btn-sm">Supprimer</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                Aucun type de gaz enregistré.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

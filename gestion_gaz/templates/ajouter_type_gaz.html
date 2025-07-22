@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block contenu %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">Ajouter un type de gaz</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.nom.id_for_label }}" class="form-label">Nom du gaz</label>
+                        {{ form.nom }}
+                        {% if form.nom.errors %}
+                            <div class="text-danger">{{ form.nom.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3 form-check">
+                        {{ form.est_disponible }}
+                        <label for="{{ form.est_disponible.id_for_label }}" class="form-check-label">Disponible</label>
+                        {% if form.est_disponible.errors %}
+                            <div class="text-danger">{{ form.est_disponible.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.quantite_stock.id_for_label }}" class="form-label">Quantité en stock</label>
+                        {{ form.quantite_stock }}
+                        {% if form.quantite_stock.errors %}
+                            <div class="text-danger">{{ form.quantite_stock.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                    <a href="{% url 'liste_types_gaz' %}" class="btn btn-secondary">Annuler</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

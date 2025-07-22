@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block contenu %}
+<div class="row">
+    <div class="col-md-8 mx-auto text-center">
+        <h1 class="mb-4">Bienvenue sur La Plateforme Gaz</h1>
+        {% if user.is_authenticated %}
+            {% if user.depot %}
+                <p class="lead">Gérez vos stocks de gaz pour votre dépôt : {{ user.depot.nom }}.</p>
+                <a href="{% url 'ajouter_type_gaz' %}" class="btn btn-primary btn-lg">Ajouter un type de gaz</a>
+                <a href="{% url 'liste_types_gaz' %}" class="btn btn-secondary btn-lg">Voir mes types de gaz</a>
+            {% else %}
+                <p class="lead">Trouvez et contactez des dépôts pour commander du gaz près de chez vous.</p>
+                <a href="{% url 'recherche_gaz' %}" class="btn btn-primary btn-lg">Rechercher du gaz</a>
+            {% endif %}
+        {% else %}
+            <p class="lead">Inscrivez-vous pour gérer un dépôt ou rechercher du gaz.</p>
+            <a href="{% url 'recherche_gaz' %}" class="btn btn-primary btn-lg">Rechercher du gaz</a>
+            <a href="{% url 'inscription' %}" class="btn btn-secondary btn-lg">S'inscrire</a>
+            <a href="{% url 'login' %}" class="btn btn-secondary btn-lg">Se connecter</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

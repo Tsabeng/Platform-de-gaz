@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block contenu %}
+<div class="row">
+    <div class="col-md-10 mx-auto">
+        <h2 class="mb-4">Rechercher du gaz</h2>
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <form method="get">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ formulaire.nom_gaz.id_for_label }}" class="form-label">Nom du gaz</label>
+                            {{ formulaire.nom_gaz }}
+                            {% if formulaire.nom_gaz.errors %}
+                                <div class="text-danger">{{ formulaire.nom_gaz.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ formulaire.adresse.id_for_label }}" class="form-label">Adresse</label>
+                            {{ formulaire.adresse }}
+                            {% if formulaire.adresse.errors %}
+                                <div class="text-danger">{{ formulaire.adresse.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Rechercher</button>
+                </form>
+            </div>
+        </div>
+        <h3 class="mb-3">Résultats</h3>
+        {% if resultats %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Nom du gaz</th>
+                            <th>Dépôt</th>
+                            <th>Adresse</th>
+                            <th>Quantité</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for type_gaz in resultats %}
+                        <tr>
+                            <td>{{ type_gaz.nom }}</td>
+                            <td><a href="{% url 'vitrine_depot' type_gaz.depot.pk %}">{{ type_gaz.depot.nom }}</a></td>
+                            <td>{{ type_gaz.depot.adresse }}</td>
+                            <td>{{ type_gaz.quantite_stock }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                Aucun gaz trouvé.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
