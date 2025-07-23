@@ -1,24 +1,126 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block contenu %}
-<div class="row">
-    <div class="col-md-8 mx-auto text-center">
-        <h1 class="mb-4">Bienvenue sur La Plateforme Gaz</h1>
-        {% if user.is_authenticated %}
-            {% if user.depot %}
-                <p class="lead">Gérez vos stocks de gaz pour votre dépôt : {{ user.depot.nom }}.</p>
-                <a href="{% url 'ajouter_type_gaz' %}" class="btn btn-primary btn-lg">Ajouter un type de gaz</a>
-                <a href="{% url 'liste_types_gaz' %}" class="btn btn-secondary btn-lg">Voir mes types de gaz</a>
+<!-- Section héroïque -->
+<section class="hero-section text-white text-center" style="background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1620735586030-4e7d09d2cffd?q=80&w=2070&auto=format&fit=crop') no-repeat center center/cover; padding: 100px 0;">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Bienvenue sur Plateforme Gaz</h1>
+        <p class="lead">Votre solution pour trouver et gérer des gaz près de chez vous</p>
+        <div class="mt-4">
+            {% if user.is_authenticated %}
+                {% if user.depot %}
+                    <a href="{% url 'liste_types_gaz' %}" class="btn btn-primary btn-lg mx-2">Gérer mon dépôt</a>
+                {% else %}
+                    <a href="{% url 'recherche_gaz' %}" class="btn btn-primary btn-lg mx-2">Rechercher du gaz</a>
+                {% endif %}
             {% else %}
-                <p class="lead">Trouvez et contactez des dépôts pour commander du gaz près de chez vous.</p>
-                <a href="{% url 'recherche_gaz' %}" class="btn btn-primary btn-lg">Rechercher du gaz</a>
+                <a href="{% url 'recherche_gaz' %}" class="btn btn-primary btn-lg mx-2">Rechercher du gaz</a>
+                <a href="{% url 'inscription' %}" class="btn btn-outline-light btn-lg mx-2">S'inscrire</a>
             {% endif %}
-        {% else %}
-            <p class="lead">Inscrivez-vous pour gérer un dépôt ou rechercher du gaz.</p>
-            <a href="{% url 'recherche_gaz' %}" class="btn btn-primary btn-lg">Rechercher du gaz</a>
-            <a href="{% url 'inscription' %}" class="btn btn-secondary btn-lg">S'inscrire</a>
-            <a href="{% url 'login' %}" class="btn btn-secondary btn-lg">Se connecter</a>
-        {% endif %}
+        </div>
     </div>
-</div>
+</section>
+
+<!-- Section fonctionnalités -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Que pouvez-vous faire sur Plateforme Gaz ?</h2>
+        <div class="row g-4">
+            {% if user.is_authenticated %}
+                {% if user.depot %}
+                    <!-- Carte pour les dépôts -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 shadow-sm">
+                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop" class="card-img-top" alt="Bouteille de gaz">
+                            <div class="card-body">
+                                <h5 class="card-title">Gérer votre dépôt</h5>
+                                <p class="card-text">Ajoutez, modifiez ou supprimez des types de gaz dans votre dépôt pour atteindre vos clients.</p>
+                                <a href="{% url 'ajouter_type_gaz' %}" class="btn btn-primary">Ajouter un type de gaz</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 shadow-sm">
+                            <img src="https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?q=80&w=2070&auto=format&fit=crop" class="card-img-top" alt="Stock de gaz">
+                            <div class="card-body">
+                                <h5 class="card-title">Suivre votre stock</h5>
+                                <p class="card-text">Mettez à jour vos stocks en temps réel et gérez la disponibilité de vos gaz.</p>
+                                <a href="{% url 'liste_types_gaz' %}" class="btn btn-primary">Voir mes stocks</a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <!-- Carte pour les clients -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 shadow-sm">
+                            <img src="{% static 'images/bouteille.jpeg' %} " class="card-img-top" alt="Bouteille de gaz">
+                            <div class="card-body">
+                                <h5 class="card-title">Trouver du gaz</h5>
+                                <p class="card-text">Recherchez des gaz disponibles près de chez vous et contactez les dépôts directement.</p>
+                                <a href="{% url 'recherche_gaz' %}" class="btn btn-primary">Rechercher maintenant</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <!-- Cartes pour les utilisateurs non connectés -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="{% static 'images/bouteille.jpeg' %}" class="card-img-top" alt="Bouteille de gaz">
+                        <div class="card-body">
+                            <h5 class="card-title">Rechercher du gaz</h5>
+                            <p class="card-text">Trouvez des bouteilles de gaz disponibles près de chez vous en quelques clics.</p>
+                            <a href="{% url 'recherche_gaz' %}" class="btn btn-primary">Rechercher maintenant</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop" class="card-img-top" alt="Inscription">
+                        <div class="card-body">
+                            <h5 class="card-title">Inscrivez-vous</h5>
+                            <p class="card-text">Créez un compte pour gérer votre dépôt ou trouver du gaz facilement.</p>
+                            <a href="{% url 'inscription' %}" class="btn btn-primary">S'inscrire</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1593085512500-5d55148d6f0d?q=80&w=2070&auto=format&fit=crop" class="card-img-top" alt="Connexion">
+                        <div class="card-body">
+                            <h5 class="card-title">Connectez-vous</h5>
+                            <p class="card-text">Accédez à votre compte pour gérer vos stocks ou vos recherches.</p>
+                            <a href="{% url 'login' %}" class="btn btn-primary">Se connecter</a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Section contact -->
+<section class="bg-light py-5">
+    <div class="container text-center">
+        <h2 class="mb-4">Pourquoi choisir Plateforme Gaz ?</h2>
+        <p class="lead mb-4">Une solution simple et rapide pour connecter les dépôts et les clients à travers une interface moderne.</p>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <i class="bi bi-search display-4 text-primary"></i>
+                <h5 class="mt-3">Recherche facile</h5>
+                <p>Trouvez des gaz disponibles près de chez vous en quelques secondes.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="bi bi-shop display-4 text-primary"></i>
+                <h5 class="mt-3">Gestion simplifiée</h5>
+                <p>Les dépôts peuvent gérer leurs stocks et atteindre plus de clients.</p>
+            </div>
+            <div class="col-md-4">
+                <i class="bi bi-telephone display-4 text-primary"></i>
+                <h5 class="mt-3">Contact direct</h5>
+                <p>Contactez les dépôts directement pour vos besoins en gaz.</p>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

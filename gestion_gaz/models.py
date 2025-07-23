@@ -13,7 +13,19 @@ class Depot(models.Model):
         return self.nom
 
 class TypeGaz(models.Model):
-    nom = models.CharField(max_length=50)
+    TYPE_GAZ_CHOICES = [
+        ('TradexGaz', 'TradexGaz'),
+        ('GPL', 'GPL'),
+        ('SCTM', 'SCTM'),
+        ('TotalEnergies', 'TotalEnergies'),
+        ('Afriquia Gaz', 'Afriquia Gaz'),
+        ('Camgaz', 'Camgaz'),
+        ('GlocalGaz', 'GlocalGaz'),
+        ('Gaz du Cameroun', 'Gaz du Cameroun (GDC)'),
+        ('MRS Cameroon', 'MRS Cameroon'),
+        ('BOCOM Petroleum', 'BOCOM Petroleum'),
+    ]
+    nom = models.CharField(max_length=50, choices=TYPE_GAZ_CHOICES)
     depot = models.ForeignKey(Depot, related_name='types_gaz', on_delete=models.CASCADE)
     est_disponible = models.BooleanField(default=True)
     quantite_stock = models.PositiveIntegerField(default=0)
