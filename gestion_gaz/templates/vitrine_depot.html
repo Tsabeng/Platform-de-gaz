@@ -30,11 +30,13 @@
                 {% for gaz in types_gaz %}
                     <div class="col-md-6 col-lg-4">
                         <div class="card h-100 shadow-sm border-0 feature-card">
-                            <img src="{% static 'images/bouteille.jpeg' %}" class="card-img-top" alt="{{ gaz.nom }}">
+                            <img src="{% static gaz.get_image %}" class="card-img-top" alt="{{ gaz.nom }}">
                             <div class="card-body">
                                 <h5 class="card-title">{{ gaz.nom }}</h5>
                                 <p class="card-text text-muted">Quantité en stock : {{ gaz.quantite_stock }}</p>
-                                <a href="{% url 'recherche_gaz' %}?nom_gaz={{ gaz.nom|urlencode }}" class="btn btn-primary w-100">Rechercher ce gaz</a>
+                                {% if gaz.depot.whatsapp %}
+                                    <a href="https://wa.me/{{ gaz.depot.whatsapp|urlencode }}?text={{ 'Bonjour, je souhaite commander ' | urlencode }}{{ gaz.nom | urlencode }}" target="_blank" class="btn btn-success w-100"><i class="bi bi-whatsapp me-2"></i>Commander par WhatsApp</a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -64,6 +66,9 @@
 }
 .feature-card .btn:hover {
     background-color: #0052cc;
+}
+.feature-card .btn-success:hover {
+    background-color: #25D366;
 }
 .card-img-top {
     transition: transform 0.3s ease;

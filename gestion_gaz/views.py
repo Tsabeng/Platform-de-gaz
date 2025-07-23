@@ -199,3 +199,37 @@ def profil_depot(request):
             }
         )
     return render(request, 'profil_depot.html', {'form': form, 'depot': depot})
+
+
+
+
+from .forms import FormulaireProfilDepot
+from django.contrib import messages
+
+@login_required
+def profil_depot(request):
+    try:
+        depot = request.user.depot
+    except Depot.DoesNotExist:
+        depot = None
+
+    if request.method == 'POST':
+        form = FormulaireProfilDepot(request.POST, request.FILES, instance=depot)
+        if form.is_valid():
+            if depot is None:
+                depot = form.save(commit=False)
+                depot.proprietaire = request.user
+            else:
+                # Mettre à jour uniquement les champs fournis
+                for field in form.cleaned_data:
+                    if form.cleaned_data[field] is not None and form.cleaned_data[field] != '':
+                        setattr(depot, field, form.cleaned_data[field])
+            depot.save()
+            messages.success(request, "Profil du dépôt mis à jour avec succès.")
+            return redirect('profil_depot')
+        else:
+            messages.error(request, "Erreur lors de la mise à jour du profil. Vérifiez les champs.")
+    else:
+        form = FormulaireProfilDepot(instance=depot)
+
+    return render(request, 'profil_depot.html', {'form': form, 'depot': depot})
