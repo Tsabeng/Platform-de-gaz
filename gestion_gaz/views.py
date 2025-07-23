@@ -48,14 +48,28 @@ def ajouter_type_gaz(request):
     if not check_depot_access(request.user):
         messages.error(request, "Seuls les propriétaires de dépôts peuvent ajouter des types de gaz.")
         return redirect('accueil')
+    
+    depot = request.user.depot
     if request.method == 'POST':
         form = FormulaireTypeGaz(request.POST)
         if form.is_valid():
-            type_gaz = form.save(commit=False)
-            type_gaz.depot = request.user.depot
-            type_gaz.save()
-            messages.success(request, "Type de gaz ajouté avec succès !")
-            return redirect('liste_types_gaz')
+            nom = form.cleaned_data['nom']
+            quantite_stock = form.cleaned_data['quantite_stock']
+            est_disponible = form.cleaned_data['est_disponible']
+            
+            # Vérifier si le type de gaz existe déjà dans le dépôt
+            existing_gaz = TypeGaz.objects.filter(nom=nom, depot=depot).first()
+            if existing_gaz:
+                # Rediriger vers la mise à jour du stock
+                messages.warning(request, f"Le type de gaz {nom} existe déjà. Veuillez mettre à jour le stock.")
+                return redirect('modifier_stock', pk=existing_gaz.pk)
+            else:
+                # Créer un nouveau type de gaz
+                type_gaz = form.save(commit=False)
+                type_gaz.depot = depot
+                type_gaz.save()
+                messages.success(request, f"Le type de gaz {type_gaz.nom} a été ajouté avec succès !")
+                return redirect('liste_types_gaz')
     else:
         form = FormulaireTypeGaz()
     return render(request, 'ajouter_type_gaz.html', {'form': form})

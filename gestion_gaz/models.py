@@ -30,6 +30,11 @@ class TypeGaz(models.Model):
     est_disponible = models.BooleanField(default=True)
     quantite_stock = models.PositiveIntegerField(default=0)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['nom', 'depot'], name='unique_nom_depot')
+        ]
+
     def __str__(self):
         return f"{self.nom} - {self.depot.nom}"
 

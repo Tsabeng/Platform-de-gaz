@@ -22,6 +22,17 @@ class FormulaireTypeGaz(forms.ModelForm):
             'quantite_stock': 'Quantité en stock',
         }
 
+    def clean(self):
+        cleaned_data = super().clean()
+        nom = cleaned_data.get('nom')
+        depot = self.instance.depot if self.instance.pk else None
+
+        if depot and nom:
+            existing_gaz = TypeGaz.objects.filter(nom=nom, depot=depot).exclude(pk=self.instance.pk)
+            if existing_gaz.exists():
+                self.add_error('nom', 'Ce type de gaz existe déjà dans ce dépôt. Veuillez mettre à jour le stock existant via la page de gestion du stock.')
+        return cleaned_data
+
 class FormulaireRechercheGaz(forms.Form):
     nom_gaz = forms.CharField(max_length=50, required=False, label="Nom du gaz")
     adresse = forms.CharField(widget=forms.Textarea, required=False, label="Adresse")
