@@ -5,8 +5,25 @@ from django.contrib import messages
 from .forms import FormulaireInscription, FormulaireTypeGaz, FormulaireRechercheGaz, FormulaireMiseAJourStock
 from .models import TypeGaz, Depot, Client
 
+from django.db.models import Q
+
 def accueil(request):
-    return render(request, 'accueil.html')
+    depots_proches = []
+    client_adresse = None
+
+    if request.user.is_authenticated and hasattr(request.user, 'client'):
+        client_adresse = request.user.client.adresse.lower()
+        # Rechercher les dépôts dont l'adresse contient des parties de l'adresse du client
+        depots_proches = Depot.objects.filter(
+            Q(adresse__icontains=client_adresse) |
+            Q(adresse__icontains=client_adresse.split()[0])  # Recherche sur le premier mot
+        )[:3]  
+
+    return render(request, 'accueil.html', {
+        'depots_proches': depots_proches,
+        'client_adresse': client_adresse
+    })
+
 
 def inscription(request):
     if request.method == 'POST':
