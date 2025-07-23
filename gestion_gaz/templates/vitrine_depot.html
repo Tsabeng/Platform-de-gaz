@@ -1,51 +1,75 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block contenu %}
-<div class="row">
-    <div class="col-md-8 mx-auto">
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-primary text-white">
-                <h3 class="mb-0">{{ depot.nom }}</h3>
-            </div>
-            <div class="card-body">
-                <h4 class="card-title">Informations du dépôt</h4>
-                <p><strong>Adresse :</strong> {{ depot.adresse }}</p>
-                <p><strong>Email :</strong> {{ depot.proprietaire.email }}</p>
-                {% if depot.telephone %}
-                    <p><strong>Téléphone :</strong> {{ depot.telephone }}</p>
-                {% endif %}
-                {% if depot.whatsapp %}
-                    <p><strong>WhatsApp :</strong> <a href="https://wa.me/{{ depot.whatsapp|urlencode }}" target="_blank">{{ depot.whatsapp }}</a></p>
-                {% endif %}
-                <hr>
-                <h4 class="card-title">Types de gaz disponibles</h4>
-                {% if types_gaz %}
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>Nom du gaz</th>
-                                    <th>Quantité en stock</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for type_gaz in types_gaz %}
-                                <tr>
-                                    <td>{{ type_gaz.nom }}</td>
-                                    <td>{{ type_gaz.quantite_stock }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% else %}
-                    <div class="alert alert-info">
-                        Aucun gaz disponible dans ce dépôt.
-                    </div>
-                {% endif %}
-                <a href="{% url 'recherche_gaz' %}" class="btn btn-secondary mt-3">Retour à la recherche</a>
-            </div>
+<!-- Section héroïque du dépôt -->
+<section class="hero-section text-white text-center" style="background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), {% if depot.image %}url('{{ depot.image.url }}'){% else %}url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop'){% endif %} no-repeat center center/cover; padding: 100px 0;">
+    <div class="container">
+        <h1 class="display-4 fw-bold">{{ depot.nom }}</h1>
+        <p class="lead">{{ depot.adresse }}</p>
+        <div class="mt-3">
+            {% if depot.telephone %}
+                <p><i class="bi bi-telephone me-2"></i>{{ depot.telephone }}</p>
+            {% endif %}
+            {% if depot.whatsapp %}
+                <p><i class="bi bi-whatsapp me-2"></i><a href="https://wa.me/{{ depot.whatsapp|urlencode }}" target="_blank" class="text-white">{{ depot.whatsapp }}</a></p>
+            {% endif %}
+            {% if depot.proprietaire.email %}
+                <p><i class="bi bi-envelope me-2"></i>{{ depot.proprietaire.email }}</p>
+            {% endif %}
         </div>
     </div>
-</div>
+</section>
+
+<!-- Section types de gaz -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5 fw-bold">Gaz disponibles</h2>
+        {% if types_gaz %}
+            <div class="row g-4">
+                {% for gaz in types_gaz %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 shadow-sm border-0 feature-card">
+                            <img src="{% static 'images/bouteille.jpeg' %}" class="card-img-top" alt="{{ gaz.nom }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ gaz.nom }}</h5>
+                                <p class="card-text text-muted">Quantité en stock : {{ gaz.quantite_stock }}</p>
+                                <a href="{% url 'recherche_gaz' %}?nom_gaz={{ gaz.nom|urlencode }}" class="btn btn-primary w-100">Rechercher ce gaz</a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-center text-muted">Aucun gaz disponible pour le moment.</p>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center text-muted">Aucun gaz disponible pour le moment.</p>
+        {% endif %}
+        <div class="text-center mt-4">
+            <a href="{% url 'recherche_gaz' %}" class="btn btn-secondary">Retour à la recherche</a>
+        </div>
+    </div>
+</section>
+
+<style>
+.feature-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+.feature-card .btn {
+    transition: background-color 0.3s ease;
+}
+.feature-card .btn:hover {
+    background-color: #0052cc;
+}
+.card-img-top {
+    transition: transform 0.3s ease;
+}
+.card-img-top:hover {
+    transform: scale(1.05);
+}
+</style>
 {% endblock %}

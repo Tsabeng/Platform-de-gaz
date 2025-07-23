@@ -11,6 +11,7 @@
             {% if user.is_authenticated %}
                 {% if user.depot %}
                     <a href="{% url 'liste_types_gaz' %}" class="btn btn-primary btn-lg mx-2">Gérer mon dépôt</a>
+                    <a href="{% url 'profil_depot' %}" class="btn btn-outline-light btn-lg mx-2">Mon profil</a>
                 {% else %}
                     <a href="{% url 'recherche_gaz' %}" class="btn btn-primary btn-lg mx-2">Rechercher du gaz</a>
                 {% endif %}
@@ -31,7 +32,11 @@
             {% for depot in depots_proches %}
                 <div class="col-md-4 col-lg-3">
                     <div class="card h-100 shadow-sm border-0 feature-card">
-                        <img src="{% static 'images/bouteille.jpeg' %}" class="card-img-top" alt="{{ depot.nom }}">
+                        {% if depot.image %}
+                            <img src="{{ depot.image.url }}" class="card-img-top" alt="{{ depot.nom }}">
+                        {% else %}
+                            <img src="{% static 'images/bouteille.jpeg' %}" class="card-img-top" alt="{{ depot.nom }}">
+                        {% endif %}
                         <div class="card-body">
                             <h5 class="card-title">{{ depot.nom }}</h5>
                             <p class="card-text text-muted">{{ depot.adresse }}</p>
@@ -73,6 +78,17 @@
                                 <h5 class="card-title">Suivre votre stock</h5>
                                 <p class="card-text text-muted">Mettez à jour vos stocks en temps réel et gérez la disponibilité de vos gaz.</p>
                                 <a href="{% url 'liste_types_gaz' %}" class="btn btn-primary w-100">Voir mes stocks</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Carte pour modifier le profil -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card h-100 shadow-sm border-0 feature-card">
+                            <div class="card-body text-center">
+                                <i class="bi bi-person-gear display-4 text-primary mb-3"></i>
+                                <h5 class="card-title">Modifier votre profil</h5>
+                                <p class="card-text text-muted">Mettez à jour les informations et l'image de votre dépôt.</p>
+                                <a href="{% url 'profil_depot' %}" class="btn btn-primary w-100">Mon profil</a>
                             </div>
                         </div>
                     </div>

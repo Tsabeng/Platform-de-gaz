@@ -1,16 +1,27 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from gestion_gaz.models import Client, TypeGaz
+from gestion_gaz.models import Client, TypeGaz, Depot
 
 class FormulaireInscription(UserCreationForm):
     adresse = forms.CharField(widget=forms.Textarea, label="Adresse")
     telephone = forms.CharField(max_length=20, required=False, label="Numéro de téléphone")
     whatsapp = forms.CharField(max_length=20, required=False, label="Numéro WhatsApp")
+    nom_depot = forms.CharField(max_length=100, required=False, label="Nom du dépôt (pour les propriétaires)")
+    image = forms.ImageField(required=False, label="Image du dépôt")
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2', 'adresse', 'telephone', 'whatsapp']
+        fields = ['username', 'email', 'password1', 'password2', 'adresse', 'telephone', 'whatsapp', 'nom_depot', 'image']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        role = self.data.get('role')
+        nom_depot = cleaned_data.get('nom_depot')
+
+        if role == 'depot' and not nom_depot:
+            self.add_error('nom_depot', 'Le nom du dépôt est requis pour les propriétaires.')
+        return cleaned_data
 
 class FormulaireTypeGaz(forms.ModelForm):
     class Meta:

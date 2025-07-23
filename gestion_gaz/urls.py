@@ -10,4 +10,5 @@ urlpatterns = [
     path('supprimer-type-gaz/<int:pk>/', views.supprimer_type_gaz, name='supprimer_type_gaz'),
     path('depot/<int:pk>/', views.vitrine_depot, name='vitrine_depot'),
     path('modifier-stock/<int:pk>/', views.modifier_stock, name='modifier_stock'),
+    path('profil-depot/', views.profil_depot, name='profil_depot'),
 ]

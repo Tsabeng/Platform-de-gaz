@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import FormulaireInscription, FormulaireTypeGaz, FormulaireRechercheGaz, FormulaireMiseAJourStock
 from .models import TypeGaz, Depot, Client
-
 from django.db.models import Q
 
 def accueil(request):
@@ -13,21 +12,19 @@ def accueil(request):
 
     if request.user.is_authenticated and hasattr(request.user, 'client'):
         client_adresse = request.user.client.adresse.lower()
-        # Rechercher les dépôts dont l'adresse contient des parties de l'adresse du client
         depots_proches = Depot.objects.filter(
             Q(adresse__icontains=client_adresse) |
-            Q(adresse__icontains=client_adresse.split()[0])  # Recherche sur le premier mot
-        )[:3]  
+            Q(adresse__icontains=client_adresse.split()[0])
+        )[:3]
 
     return render(request, 'accueil.html', {
         'depots_proches': depots_proches,
         'client_adresse': client_adresse
     })
 
-
 def inscription(request):
     if request.method == 'POST':
-        formulaire = FormulaireInscription(request.POST)
+        formulaire = FormulaireInscription(request.POST, request.FILES)
         if formulaire.is_valid():
             utilisateur = formulaire.save(commit=False)
             role = request.POST.get('role')
@@ -40,10 +37,11 @@ def inscription(request):
             elif role == 'depot':
                 Depot.objects.create(
                     proprietaire=utilisateur,
-                    nom=request.POST.get('nom_depot', utilisateur.username + ' Depot'),
+                    nom=formulaire.cleaned_data['nom_depot'],
                     adresse=formulaire.cleaned_data['adresse'],
                     telephone=formulaire.cleaned_data['telephone'],
-                    whatsapp=formulaire.cleaned_data['whatsapp']
+                    whatsapp=formulaire.cleaned_data['whatsapp'],
+                    image=formulaire.cleaned_data['image']
                 )
             login(request, utilisateur)
             messages.success(request, "Inscription réussie !")
@@ -74,14 +72,11 @@ def ajouter_type_gaz(request):
             quantite_stock = form.cleaned_data['quantite_stock']
             est_disponible = form.cleaned_data['est_disponible']
             
-            # Vérifier si le type de gaz existe déjà dans le dépôt
             existing_gaz = TypeGaz.objects.filter(nom=nom, depot=depot).first()
             if existing_gaz:
-                # Rediriger vers la mise à jour du stock
                 messages.warning(request, f"Le type de gaz {nom} existe déjà. Veuillez mettre à jour le stock.")
                 return redirect('modifier_stock', pk=existing_gaz.pk)
             else:
-                # Créer un nouveau type de gaz
                 type_gaz = form.save(commit=False)
                 type_gaz.depot = depot
                 type_gaz.save()
@@ -137,6 +132,7 @@ def modifier_stock(request, pk):
 def recherche_gaz(request):
     formulaire = FormulaireRechercheGaz(request.GET or None)
     resultats = []
+
     if formulaire.is_valid():
         nom_gaz = formulaire.cleaned_data['nom_gaz']
         adresse = formulaire.cleaned_data['adresse']
@@ -147,9 +143,59 @@ def recherche_gaz(request):
         )
         if adresse:
             resultats = resultats.filter(depot__adresse__icontains=adresse)
-    return render(request, 'recherche_gaz.html', {'formulaire': formulaire, 'resultats': resultats})
+        
+        if request.user.is_authenticated and hasattr(request.user, 'client'):
+            client_adresse = request.user.client.adresse.lower()
+            resultats_proches = resultats.filter(
+                Q(depot__adresse__icontains=client_adresse) |
+                Q(depot__adresse__icontains=client_adresse.split()[0])
+            )
+            resultats_autres = resultats.exclude(
+                Q(depot__adresse__icontains=client_adresse) |
+                Q(depot__adresse__icontains=client_adresse.split()[0])
+            )
+            resultats = list(resultats_proches) + list(resultats_autres)
+
+    return render(request, 'recherche_gaz.html', {
+        'formulaire': formulaire,
+        'resultats': resultats
+    })
 
 def vitrine_depot(request, pk):
     depot = get_object_or_404(Depot, pk=pk)
     types_gaz = TypeGaz.objects.filter(depot=depot, est_disponible=True, quantite_stock__gt=0)
-    return render(request, 'vitrine_depot.html', {'depot': depot, 'types_gaz': types_gaz})
+    return render(request, 'vitrine_depot.html', {
+        'depot': depot,
+        'types_gaz': types_gaz
+    })
+
+@login_required
+def profil_depot(request):
+    if not check_depot_access(request.user):
+        messages.error(request, "Seuls les propriétaires de dépôts peuvent accéder à cette page.")
+        return redirect('accueil')
+    depot = request.user.depot
+    if request.method == 'POST':
+        form = FormulaireInscription(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            depot.nom = form.cleaned_data['nom_depot']
+            depot.adresse = form.cleaned_data['adresse']
+            depot.telephone = form.cleaned_data['telephone']
+            depot.whatsapp = form.cleaned_data['whatsapp']
+            if form.cleaned_data['image']:
+                depot.image = form.cleaned_data['image']
+            depot.save()
+            messages.success(request, "Profil du dépôt mis à jour avec succès !")
+            return redirect('profil_depot')
+    else:
+        form = FormulaireInscription(
+            instance=request.user,
+            initial={
+                'nom_depot': depot.nom,
+                'adresse': depot.adresse,
+                'telephone': depot.telephone,
+                'whatsapp': depot.whatsapp,
+            }
+        )
+    return render(request, 'profil_depot.html', {'form': form, 'depot': depot})
