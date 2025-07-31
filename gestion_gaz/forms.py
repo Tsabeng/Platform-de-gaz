@@ -5,7 +5,7 @@ from gestion_gaz.models import Client, TypeGaz, Depot
 from django.core.exceptions import ValidationError
 
 class FormulaireInscription(UserCreationForm):
-    adresse = forms.CharField(widget=forms.Textarea, label="Adresse")
+    adresse = forms.CharField(widget=forms.Textarea(attrs={'rows': 2}), label="Adresse")
     telephone = forms.CharField(max_length=20, required=False, label="Numéro de téléphone")
     whatsapp = forms.CharField(max_length=20, required=False, label="Numéro WhatsApp")
     nom_depot = forms.CharField(max_length=100, required=False, label="Nom du dépôt (pour les propriétaires)")
@@ -47,8 +47,7 @@ class FormulaireTypeGaz(forms.ModelForm):
 
 class FormulaireRechercheGaz(forms.Form):
     nom_gaz = forms.CharField(max_length=50, required=False, label="Nom du gaz")
-    adresse = forms.CharField(widget=forms.Textarea, required=False, label="Adresse")
-
+    adresse = forms.CharField(max_length=300, required=False, label="Adresse")
 class FormulaireMiseAJourStock(forms.Form):
     quantite = forms.IntegerField(label="Quantité à ajouter ou réduire", help_text="Utilisez un nombre positif pour ajouter, négatif pour réduire")
     est_disponible = forms.BooleanField(label="Disponible", required=False)
