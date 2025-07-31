@@ -5,6 +5,9 @@ from django.contrib import messages
 from .forms import FormulaireInscription, FormulaireTypeGaz, FormulaireRechercheGaz, FormulaireMiseAJourStock
 from .models import TypeGaz, Depot, Client
 from django.db.models import Q
+from django.http import JsonResponse
+import logging
+
 
 def accueil(request):
     depots_proches = []
@@ -129,13 +132,20 @@ def modifier_stock(request, pk):
         form = FormulaireMiseAJourStock(initial={'est_disponible': type_gaz.est_disponible})
     return render(request, 'modifier_stock.html', {'form': form, 'type_gaz': type_gaz})
 
+# Configurer le logger
+logger = logging.getLogger(__name__)
+
 def recherche_gaz(request):
     formulaire = FormulaireRechercheGaz(request.GET or None)
     resultats = []
 
-    if formulaire.is_valid():
-        nom_gaz = formulaire.cleaned_data['nom_gaz']
-        adresse = formulaire.cleaned_data['adresse']
+    if request.GET.get('ajax'):
+        # Requête AJAX
+        nom_gaz = request.GET.get('nom_gaz', '').strip()
+        adresse = request.GET.get('adresse', '').strip()
+        logger.debug(f"Requête AJAX: nom_gaz={nom_gaz}, adresse={adresse}")
+        
+        # Filtrage initial
         resultats = TypeGaz.objects.filter(
             nom__icontains=nom_gaz,
             est_disponible=True,
@@ -143,18 +153,72 @@ def recherche_gaz(request):
         )
         if adresse:
             resultats = resultats.filter(depot__adresse__icontains=adresse)
-        
+
+        # Priorisation pour utilisateurs authentifiés
         if request.user.is_authenticated and hasattr(request.user, 'client'):
-            client_adresse = request.user.client.adresse.lower()
-            resultats_proches = resultats.filter(
-                Q(depot__adresse__icontains=client_adresse) |
-                Q(depot__adresse__icontains=client_adresse.split()[0])
-            )
-            resultats_autres = resultats.exclude(
-                Q(depot__adresse__icontains=client_adresse) |
-                Q(depot__adresse__icontains=client_adresse.split()[0])
-            )
-            resultats = list(resultats_proches) + list(resultats_autres)
+            client_adresse = request.user.client.adresse.lower() if request.user.client.adresse else ''
+            logger.debug(f"Client adresse: {client_adresse}")
+            if client_adresse:
+                resultats_proches = resultats.filter(
+                    Q(depot__adresse__icontains=client_adresse) |
+                    Q(depot__adresse__icontains=client_adresse.split()[0] if client_adresse else '')
+                )
+                resultats_autres = resultats.exclude(
+                    Q(depot__adresse__icontains=client_adresse) |
+                    Q(depot__adresse__icontains=client_adresse.split()[0] if client_adresse else '')
+                )
+                resultats = list(resultats_proches) + list(resultats_autres)
+
+        # Débogage des résultats
+        logger.debug(f"Résultats AJAX: {len(resultats)} éléments")
+        for r in resultats:
+            logger.debug(f" - {r.nom}, dépôt: {r.depot.nom}, adresse: {r.depot.adresse}, stock: {r.quantite_stock}")
+
+        resultats_json = [
+            {
+                'nom': type_gaz.nom,
+                'depot_pk': type_gaz.depot.pk,
+                'depot_nom': type_gaz.depot.nom,
+                'depot_adresse': type_gaz.depot.adresse,
+                'quantite_stock': type_gaz.quantite_stock
+            } for type_gaz in resultats
+        ]
+        return JsonResponse({'resultats': resultats_json})
+
+    # Requête classique
+    logger.debug(f"Requête classique: GET={request.GET}")
+    if formulaire.is_valid():
+        nom_gaz = formulaire.cleaned_data['nom_gaz'] or ''
+        adresse = formulaire.cleaned_data['adresse'] or ''
+        logger.debug(f"Formulaire valide: nom_gaz={nom_gaz}, adresse={adresse}")
+        
+        resultats = TypeGaz.objects.filter(
+            nom__icontains=nom_gaz,
+            est_disponible=True,
+            quantite_stock__gt=0
+        )
+        if adresse:
+            resultats = resultats.filter(depot__adresse__icontains=adresse)
+
+        if request.user.is_authenticated and hasattr(request.user, 'client'):
+            client_adresse = request.user.client.adresse.lower() if request.user.client.adresse else ''
+            logger.debug(f"Client adresse: {client_adresse}")
+            if client_adresse:
+                resultats_proches = resultats.filter(
+                    Q(depot__adresse__icontains=client_adresse) |
+                    Q(depot__adresse__icontains=client_adresse.split()[0] if client_adresse else '')
+                )
+                resultats_autres = resultats.exclude(
+                    Q(depot__adresse__icontains=client_adresse) |
+                    Q(depot__adresse__icontains=client_adresse.split()[0] if client_adresse else '')
+                )
+                resultats = list(resultats_proches) + list(resultats_autres)
+        
+        logger.debug(f"Résultats classique: {len(resultats)} éléments")
+        for r in resultats:
+            logger.debug(f" - {r.nom}, dépôt: {r.depot.nom}, adresse: {r.depot.adresse}, stock: {r.quantite_stock}")
+    else:
+        logger.debug(f"Formulaire invalide: {formulaire.errors}")
 
     return render(request, 'recherche_gaz.html', {
         'formulaire': formulaire,

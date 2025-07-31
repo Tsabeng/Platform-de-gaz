@@ -46,8 +46,26 @@ class FormulaireTypeGaz(forms.ModelForm):
         return cleaned_data
 
 class FormulaireRechercheGaz(forms.Form):
-    nom_gaz = forms.CharField(max_length=50, required=False, label="Nom du gaz")
-    adresse = forms.CharField(max_length=300, required=False, label="Adresse")
+    nom_gaz = forms.CharField(
+        max_length=50,
+        required=False,
+        label="Nom du gaz",
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Ex. SCTM, Camgaz, Totalgaz',
+            'aria-label': 'Nom du gaz'
+        })
+    )
+    adresse = forms.CharField(
+        max_length=300,
+        required=False,
+        label="Adresse",
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Ex. Douala, Yaoundé, Simbock',
+            'aria-label': 'Adresse'
+        })
+    )
 class FormulaireMiseAJourStock(forms.Form):
     quantite = forms.IntegerField(label="Quantité à ajouter ou réduire", help_text="Utilisez un nombre positif pour ajouter, négatif pour réduire")
     est_disponible = forms.BooleanField(label="Disponible", required=False)
