@@ -11,4 +11,6 @@ urlpatterns = [
     path('depot/<int:pk>/', views.vitrine_depot, name='vitrine_depot'),
     path('modifier-stock/<int:pk>/', views.modifier_stock, name='modifier_stock'),
     path('profil-depot/', views.profil_depot, name='profil_depot'),
+    path('contact/', views.contact, name='contact'),
+
 ]

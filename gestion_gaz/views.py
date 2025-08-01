@@ -297,3 +297,7 @@ def profil_depot(request):
         form = FormulaireProfilDepot(instance=depot)
 
     return render(request, 'profil_depot.html', {'form': form, 'depot': depot})
+
+
+def contact(request):
+    return render(request, 'contact.html', {})
