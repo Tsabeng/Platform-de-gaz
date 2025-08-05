@@ -90,7 +90,7 @@ class FormulaireProfilDepot(forms.ModelForm):
             'image': 'Uploadez une image de votre dépôt (PNG/JPEG, max 5 Mo, facultatif).',
         }
         widgets = {
-            'adresse': forms.Textarea(attrs={'rows': 4}),
+            'adresse': forms.Textarea(attrs={'rows': 2}),
         }
 
     def __init__(self, *args, **kwargs):

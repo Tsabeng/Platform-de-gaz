@@ -2,71 +2,87 @@
 {% load static %}
 
 {% block contenu %}
-<section class="py-5">
+<section class="py-5 bg-light">
     <div class="container">
-        <h2 class="text-center mb-5 fw-bold">Modifier le profil du dépôt</h2>
+        <h2 class="text-center mb-5 fw-bold text-dark">Modifier le profil du dépôt</h2>
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-6">
-                <div class="card shadow-sm border-0">
-                    <div class="card-body">
+                <div class="card shadow-lg border-0" style="background: linear-gradient(135deg, #f8f9fa 0%, #d4edda 100%); border-radius: 10px;">
+                    <div class="card-body p-4">
                         {% if messages %}
                             {% for message in messages %}
-                                <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %}">
+                                <div class="alert {% if message.tags == 'success' %}alert-success bg-success text-white{% else %}alert-danger bg-danger text-white{% endif %} alert-dismissible fade show" role="alert">
                                     {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>
                             {% endfor %}
                         {% endif %}
                         {% if depot %}
                             <div class="text-center mb-4">
-                                <h5>{{ depot.nom }}</h5>
+                                <h5 class="text-dark">{{ depot.nom }}</h5>
                                 {% if depot.image %}
-                                    <img src="{{ depot.image.url }}" alt="{{ depot.nom }}" class="img-fluid rounded" style="max-width: 200px;">
+                                    <img src="{{ depot.image.url }}" alt="{{ depot.nom }}" class="img-fluid depot-image" style="max-width: 200px; border-radius: 10px; border: 2px solid #28a745;">
                                 {% endif %}
                             </div>
                         {% endif %}
                         <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
-                            <div class="mb-3">
-                                <label for="{{ form.nom.id_for_label }}" class="form-label">{{ form.nom.label }} <span class="text-muted">(facultatif)</span></label>
-                                {{ form.nom }}
+                            <div class="mb-3 position-relative">
+                                <label for="{{ form.nom.id_for_label }}" class="form-label fw-semibold text-dark">{{ form.nom.label }} <span class="text-muted">(facultatif)</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-shop"></i></span>
+                                    {{ form.nom }}
+                                </div>
                                 {% if form.nom.errors %}
                                     <div class="text-danger">{{ form.nom.errors }}</div>
                                 {% endif %}
                                 <small class="form-text text-muted">{{ form.nom.help_text }}</small>
                             </div>
-                            <div class="mb-3">
-                                <label for="{{ form.adresse.id_for_label }}" class="form-label">{{ form.adresse.label }} <span class="text-muted">(facultatif)</span></label>
-                                {{ form.adresse }}
+                            <div class="mb-3 position-relative">
+                                <label for="{{ form.adresse.id_for_label }}" class="form-label fw-semibold text-dark">{{ form.adresse.label }} <span class="text-muted">(facultatif)</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-geo-alt"></i></span>
+                                    {{ form.adresse }}
+                                </div>
                                 {% if form.adresse.errors %}
                                     <div class="text-danger">{{ form.adresse.errors }}</div>
                                 {% endif %}
                                 <small class="form-text text-muted">{{ form.adresse.help_text }}</small>
                             </div>
-                            <div class="mb-3">
-                                <label for="{{ form.telephone.id_for_label }}" class="form-label">{{ form.telephone.label }} <span class="text-muted">(facultatif)</span></label>
-                                {{ form.telephone }}
+                            <div class="mb-3 position-relative">
+                                <label for="{{ form.telephone.id_for_label }}" class="form-label fw-semibold text-dark">{{ form.telephone.label }} <span class="text-muted">(facultatif)</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-telephone"></i></span>
+                                    {{ form.telephone }}
+                                </div>
                                 {% if form.telephone.errors %}
                                     <div class="text-danger">{{ form.telephone.errors }}</div>
                                 {% endif %}
                                 <small class="form-text text-muted">{{ form.telephone.help_text }}</small>
                             </div>
-                            <div class="mb-3">
-                                <label for="{{ form.whatsapp.id_for_label }}" class="form-label">{{ form.whatsapp.label }} <span class="text-muted">(facultatif)</span></label>
-                                {{ form.whatsapp }}
+                            <div class="mb-3 position-relative">
+                                <label for="{{ form.whatsapp.id_for_label }}" class="form-label fw-semibold text-dark">{{ form.whatsapp.label }} <span class="text-muted">(facultatif)</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-whatsapp"></i></span>
+                                    {{ form.whatsapp }}
+                                </div>
                                 {% if form.whatsapp.errors %}
                                     <div class="text-danger">{{ form.whatsapp.errors }}</div>
                                 {% endif %}
                                 <small class="form-text text-muted">{{ form.whatsapp.help_text }}</small>
                             </div>
-                            <div class="mb-3">
-                                <label for="{{ form.image.id_for_label }}" class="form-label">{{ form.image.label }} <span class="text-muted">(facultatif)</span></label>
-                                {{ form.image }}
+                            <div class="mb-3 position-relative">
+                                <label for="{{ form.image.id_for_label }}" class="form-label fw-semibold text-dark">{{ form.image.label }} <span class="text-muted">(facultatif)</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-image"></i></span>
+                                    {{ form.image }}
+                                </div>
                                 {% if form.image.errors %}
                                     <div class="text-danger">{{ form.image.errors }}</div>
                                 {% endif %}
                                 <small class="form-text text-muted">{{ form.image.help_text }}</small>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Mettre à jour</button>
+                            <button type="submit" class="btn btn-primary w-100 btn-lg animate-button">Mettre à jour</button>
                         </form>
                     </div>
                 </div>
@@ -74,4 +90,59 @@
         </div>
     </div>
 </section>
+
+<style>
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    .depot-image {
+        transition: transform 0.3s ease;
+    }
+    .depot-image:hover {
+        transform: scale(1.05);
+    }
+    .form-control, .form-control-file {
+        border-radius: 8px;
+        border: 1px solid #ced4da;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .form-control:focus, .form-control-file:focus {
+        border-color: #28a745; 
+        box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+        outline: none;
+    }
+    .input-group-text {
+        border-radius: 8px 0 0 8px;
+        border: 1px solid #ced4da;
+        color: #2c3034; 
+    }
+    .form-control {
+        border-left: none;
+        border-radius: 0 8px 8px 0;
+    }
+    .animate-button {
+        background: #28a745; 
+        border: none;
+        transition: transform 0.3s ease, background 0.3s ease;
+    }
+    .animate-button:hover {
+        background: #dc3545; 
+        transform: scale(1.05);
+    }
+    .alert-success {
+        background: #28a745 !important; 
+        border: none;
+    }
+    .alert-danger {
+        background: #dc3545 !important;
+        border: none;
+    }
+    .text-dark {
+        color: #2c3034 !important; 
+    }
+</style>
 {% endblock %}

@@ -20,6 +20,7 @@
         .navbar-brand img {
             max-height: 40px; 
             width: auto;
+            border-radius: 20px;
         }
         .alert {
             margin-top: 20px;
@@ -38,20 +39,20 @@
         }
         /* Styles pour le footer */
         footer {
-            background: #2c3034; /* Gris sombre élégant */
+            background: #2c3034; 
             color: #fff;
             padding: 3rem 0;
             position: relative;
             overflow: hidden;
         }
         footer::before {
-            content: '\2605'; /* Étoile du drapeau camerounais */
+            content: '\2605';
             position: absolute;
             top: 15px;
             left: 15px;
             font-size: 1.5rem;
-            color: #ffecd2; /* Jaune doux */
-            opacity: 0.15; /* Plus discret */
+            color: #ffecd2; 
+            opacity: 0.15; 
         }
         footer h5 {
             font-family: 'Arial', sans-serif;
@@ -68,16 +69,16 @@
             left: 0;
             width: 40px;
             height: 2px;
-            background: #28a745; /* Vert camerounais */
+            background: #28a745; 
         }
         .footer-link {
-            color: #d4edda; /* Vert clair pour les liens */
+            color: #d4edda; 
             text-decoration: none;
             position: relative;
             transition: color 0.3s ease, transform 0.3s ease;
         }
         .footer-link:hover {
-            color: #ffecd2; /* Jaune doux */
+            color: #ffecd2;
             transform: translateX(3px);
         }
         .footer-link::after {
@@ -87,7 +88,7 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: #ffecd2; /* Jaune doux */
+            background: #ffecd2; 
             transition: width 0.3s ease;
         }
         .footer-link:hover::after {
@@ -97,8 +98,8 @@
             transition: transform 0.3s ease, color 0.3s ease;
         }
         .animate-icon:hover {
-            transform: scale(1.2); /* Grossissement plus subtil */
-            color: #dc3545; /* Rouge camerounais, conservé */
+            transform: scale(1.2);
+            color: #dc3545; 
             opacity: 0.9;
         }
         footer hr {
@@ -112,11 +113,11 @@
             transition: transform 0.3s ease;
         }
         .footer-section:hover {
-            transform: translateY(-3px); /* Soulèvement plus léger */
+            transform: translateY(-3px); 
         }
         .copyright {
             font-size: 0.85rem;
-            color: #d4edda; /* Vert clair */
+            color: #d4edda;
             padding: 0.5rem 0;
         }
     </style>
@@ -125,7 +126,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
             <a class="navbar-brand" href="{% url 'accueil' %}">
-                <img src="{% static 'images/logo.jpg' %}" alt="Mon Gaz Logo" class="logo">
+                <img src="{% static 'images/logo.jpg' %}" alt="Mon Gaz Logo" class="logo ">
                 Mon Gaz
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
