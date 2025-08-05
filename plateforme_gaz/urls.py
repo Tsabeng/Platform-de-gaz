@@ -7,4 +7,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('gestion_gaz.urls')),
     path('comptes/', include('django.contrib.auth.urls')),
+    path('messagerie/', include('messagerie.urls')),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

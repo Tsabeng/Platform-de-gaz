@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Détail du message</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
+    .container { max-width: 700px; margin: auto; background: #fff; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>{{ message.subject }}</h2>
+    <p><strong>De :</strong> {{ message.sender.username }}</p>
+    <p><strong>À :</strong> {{ message.recipient.username }}</p>
+    <p><strong>Date :</strong> {{ message.timestamp|date:"d/m/Y H:i" }}</p>
+    <hr>
+    <p>{{ message.body }}</p>
+    <p><a href="{% url 'inbox' %}">← Retour à la boîte de réception</a></p>
+  </div>
+</body>
+</html>

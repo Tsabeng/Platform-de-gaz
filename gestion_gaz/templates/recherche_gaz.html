@@ -6,7 +6,7 @@
     <div class="container">
         <h2 class="text-center mb-5 fw-bold text-primary">Trouvez votre gaz en un clic</h2>
 
-        <!-- Formulaire de recherche-->
+        <!-- Formulaire de recherche -->
         <div class="card shadow-lg border-0 bg-gradient" style="border-radius: 25px; overflow: hidden;">
             <div class="card-body p-5">
                 <form method="get" action="{% url 'recherche_gaz' %}" class="row g-3 align-items-end" id="searchForm">
@@ -51,7 +51,7 @@
         <div id="statusMessage" role="status" aria-live="polite" class="visually-hidden"></div>
 
         <!-- Résultats -->
-        <h3 class="mt-5 mb-3 fw-bold">Résultats</h3>
+        <h3 class="mt-5 mb-3 fw-bold text-dark">Résultats</h3>
         <div id="resultsContainer">
             {% if resultats %}
                 <div class="table-responsive">
@@ -193,6 +193,7 @@
         const adresse = $('#{{ formulaire.adresse.id_for_label }}').val().trim();
         const resultsContainer = $('#resultsContainer');
         const statusMessage = $('#statusMessage');
+        const depotUrlTemplate = "{% url 'vitrine_depot' 12345 %}".replace('12345', '{pk}'); // Modèle d'URL avec placeholder
 
         // Afficher un indicateur de chargement
         resultsContainer.html(`
@@ -232,7 +233,7 @@
                                     ${data.resultats.map(type_gaz => `
                                         <tr>
                                             <td>${type_gaz.nom}</td>
-                                            <td><a href="{% url 'vitrine_depot' 0 %}".replace('0', type_gaz.depot_pk)>${type_gaz.depot_nom}</a></td>
+                                            <td><a href="${depotUrlTemplate.replace('{pk}', type_gaz.depot_pk)}">${type_gaz.depot_nom}</a></td>
                                             <td>${type_gaz.depot_adresse}</td>
                                             <td>${type_gaz.quantite_stock}</td>
                                         </tr>
@@ -277,6 +278,7 @@
         // Soumission manuelle du formulaire
         $('#searchForm').on('submit', function(e) {
             console.log('Soumission manuelle du formulaire');
+            updateResults(); // Appeler updateResults pour la soumission manuelle
         });
     });
 </script>

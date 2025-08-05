@@ -24,57 +24,130 @@
 <!-- Section types de gaz -->
 <section class="py-5 bg-light">
     <div class="container">
-        <h2 class="text-center mb-5 fw-bold">Gaz disponibles</h2>
+        <h2 class="text-center mb-5 fw-bold text-dark">Gaz disponibles</h2>
         {% if types_gaz %}
             <div class="row g-4">
                 {% for gaz in types_gaz %}
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card h-100 shadow-sm border-0 feature-card">
-                            <img src="{% static gaz.get_image %}" class="card-img-top" alt="{{ gaz.nom }}">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ gaz.nom }}</h5>
-                                <p class="card-text text-muted">Quantité en stock : {{ gaz.quantite_stock }}</p>
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <div class="card h-100 gaz-card">
+                            <div class="gaz-img-wrapper">
+                                <img src="{% static gaz.get_image %}" class="gaz-img" alt="{{ gaz.nom }}">
+                            </div>
+
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title text-dark fw-semibold mb-2">{{ gaz.nom }}</h5>
+                                <p class="card-text text-muted mb-3">Quantité en stock : <strong>{{ gaz.quantite_stock }}</strong></p>
+
                                 {% if gaz.depot.whatsapp %}
-                                    <a href="https://wa.me/{{ gaz.depot.whatsapp|urlencode }}?text={{ 'Bonjour, je souhaite commander ' | urlencode }}{{ gaz.nom | urlencode }}" target="_blank" class="btn btn-success w-100"><i class="bi bi-whatsapp me-2"></i>Commander par WhatsApp</a>
+                                    <a href="https://wa.me/{{ gaz.depot.whatsapp|urlencode }}?text={{ 'Bonjour, je souhaite commander ' | urlencode }}{{ gaz.nom | urlencode }}" 
+                                       target="_blank" 
+                                       class="btn btn-success mt-auto w-100 animate-button">
+                                        <i class="bi bi-whatsapp me-2"></i>Commander via WhatsApp
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted mt-auto">Contact WhatsApp non disponible</span>
                                 {% endif %}
                             </div>
                         </div>
                     </div>
-                {% empty %}
-                    <p class="text-center text-muted">Aucun gaz disponible pour le moment.</p>
                 {% endfor %}
             </div>
         {% else %}
             <p class="text-center text-muted">Aucun gaz disponible pour le moment.</p>
         {% endif %}
-        <div class="text-center mt-4">
-            <a href="{% url 'recherche_gaz' %}" class="btn btn-secondary">Retour à la recherche</a>
+        <div class="text-center mt-5">
+            <a href="{% url 'recherche_gaz' %}" class="btn btn-outline-secondary px-4 py-2">← Retour à la recherche</a>
         </div>
     </div>
 </section>
 
 <style>
-.feature-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+.gaz-card {
+    border-radius: 12px;
+    background: #ffffff;
+    border: 9px solid rgba(33, 37, 41, 0.06); 
+    box-shadow: 0 6px 18px rgba(22, 27, 34, 0.06); 
+    transition: transform 0.28s ease, box-shadow 0.28s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
 }
-.feature-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+
+.gaz-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 18px 40px rgba(22, 27, 34, 0.12);
+    border-color: rgba(33, 37, 41, 0.10);
 }
-.feature-card .btn {
-    transition: background-color 0.3s ease;
+
+.gaz-img-wrapper {
+    width: 100%;
+    height: 220px;
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fafbfd;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 15px;
+    border-bottom: 1px solid rgba(33,37,41,0.04);
+    box-shadow: inset 0 -10px 40px rgba(10,10,10,0.01);
+    overflow: hidden;
 }
-.feature-card .btn:hover {
-    background-color: #0052cc;
+
+.gaz-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; 
+    transition: transform 0.28s ease, filter 0.28s ease;
+    display: block;
+    border-radius: 6px;
+    background: white; 
 }
-.feature-card .btn-success:hover {
-    background-color: #25D366;
+
+.gaz-img:hover {
+    transform: scale(1.03);
+    filter: saturate(1.03);
 }
-.card-img-top {
-    transition: transform 0.3s ease;
+
+/* Titre et texte */
+.card-title {
+    font-size: 1.15rem;
 }
-.card-img-top:hover {
-    transform: scale(1.05);
+.card-text {
+    font-size: 0.95rem;
+}
+
+/* Bouton principal */
+.animate-button {
+    font-weight: 600;
+    transition: background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 6px 12px rgba(37, 211, 102, 0.12);
+}
+
+.animate-button:hover {
+    background-color: #20c656 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 22px rgba(32, 198, 86, 0.18);
+}
+
+/* Bouton secondaire */
+.btn-outline-secondary:hover {
+    background-color: #f1f3f5;
+    color: #000;
+}
+
+@media (max-width: 576px) {
+    .gaz-img-wrapper {
+        height: 160px;
+        padding: 10px;
+    }
+}
+
+.gaz-card:focus-within {
+    box-shadow: 0 12px 30px rgba(22,27,34,0.14);
+    border-color: rgba(33,37,41,0.12);
+    outline: none;
 }
 </style>
 {% endblock %}

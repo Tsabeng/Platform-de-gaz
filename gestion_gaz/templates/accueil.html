@@ -31,16 +31,16 @@
         <div class="row g-4">
             {% for depot in depots_proches %}
                 <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card h-100 shadow-sm border-0 depot-card" style="background: linear-gradient(135deg, #f8f9fa 0%, #d4edda 100%); border-radius: 10px;">
+                    <div class="card h-100 depot-card">
                         {% if depot.image %}
-                            <img src="{{ depot.image.url }}" class="card-img-top depot-image" alt="{{ depot.nom }}" style="border-radius: 10px 10px 0 0; border: 2px solid #28a745;">
+                            <img src="{{ depot.image.url }}" class="card-img-top depot-image" alt="{{ depot.nom }}">
                         {% else %}
-                            <img src="{% static 'images/bouteille.jpeg' %}" class="card-img-top depot-image" alt="{{ depot.nom }}" style="border-radius: 10px 10px 0 0; border: 2px solid #28a745;">
+                            <img src="{% static 'images/bouteille.jpeg' %}" class="card-img-top depot-image" alt="{{ depot.nom }}">
                         {% endif %}
                         <div class="card-body text-center">
                             <i class="bi bi-shop display-5 text-primary mb-3 animate-icon"></i>
-                            <h5 class="card-title text-dark">{{ depot.nom }}</h5>
-                            <p class="card-text text-muted">{{ depot.adresse }}</p>
+                            <h5 class="card-title">{{ depot.nom }}</h5>
+                            <p class="card-text">{{ depot.adresse }}</p>
                             <a href="{% url 'vitrine_depot' depot.pk %}" class="btn btn-primary w-100 animate-button" aria-label="Voir les gaz disponibles pour {{ depot.nom }}">Voir les gaz disponibles</a>
                         </div>
                     </div>
@@ -55,6 +55,7 @@
     </div>
 </section>
 {% endif %}
+
 
 <!-- Section fonctionnalités -->
 <section class="py-5">
@@ -178,21 +179,9 @@
 </section>
 
 <style>
-    .depot-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .depot-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-    }
-    .depot-image {
-        height: 200px;
-        object-fit: cover;
-        transition: transform 0.3s ease;
-    }
-    .depot-image:hover {
-        transform: scale(1.05);
-    }
+    
+    
+    
     .feature-card {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
@@ -219,6 +208,44 @@
     }
     .text-dark {
         color: #2c3034 !important; 
+    }
+     .depot-card {
+        border-radius: 12px;
+        background: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .depot-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .depot-image {
+        height: 180px;
+        width: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .depot-image:hover {
+        transform: scale(1.05);
+    }
+
+    .card-body h5 {
+        font-weight: 600;
+        color: #343a40;
+    }
+
+    .card-body p {
+        font-size: 0.95rem;
+        color: #6c757d;
+    }
+
+    .card-body .btn {
+        margin-top: 10px;
+        font-weight: 500;
     }
 </style>
 {% endblock %}
