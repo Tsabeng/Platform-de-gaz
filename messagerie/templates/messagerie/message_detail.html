@@ -9,6 +9,16 @@
   </style>
 </head>
 <body>
+    {% if messages %}
+  <ul style="list-style:none; padding:0; margin-bottom: 15px;">
+    {% for message in messages %}
+      <li style="background: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 10px; border-radius: 5px; margin-bottom: 5px;">
+        {{ message }}
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
   <div class="container">
     <h2>{{ message.subject }}</h2>
     <p><strong>De :</strong> {{ message.sender.username }}</p>
@@ -17,6 +27,11 @@
     <hr>
     <p>{{ message.body }}</p>
     <p><a href="{% url 'inbox' %}">← Retour à la boîte de réception</a></p>
+    <p>
+  <a href="{% url 'reply' message.id %}" style="margin-right:15px;">↩ Répondre</a>
+  <a href="{% url 'delete_message' message.id %}" style="color: red;">🗑 Supprimer</a>
+</p>
+
   </div>
 </body>
 </html>
