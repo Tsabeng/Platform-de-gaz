@@ -1,0 +1,38 @@
+<h2>Conversation</h2>
+
+<div>
+    {% for msg in messages %}
+        <div style="
+            padding: 8px;
+            margin: 4px;
+            border-radius: 8px;
+            max-width: 60%;
+            {% if msg.sender == user %}
+                background-color: #cce5ff;
+                text-align: right;
+                margin-left: auto;
+            {% else %}
+                background-color: #e2e3e5;
+                text-align: left;
+                margin-right: auto;
+            {% endif %}
+        ">
+            <p><strong>{{ msg.sender.username }}</strong> : {{ msg.content }}</p>
+            <p style="font-size: 0.8em;">{{ msg.created_at|date:"H:i d/m/Y" }}</p>
+            {% if msg.sender == user %}
+                <form method="post" action="{% url 'messagerie:delete_message' msg.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Supprimer</button>
+                </form>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <textarea name="content" rows="3" cols="50" placeholder="Écrire un message..."></textarea><br>
+    <button type="submit">Envoyer</button>
+</form>
+
+<p><a href="{% url 'messagerie:inbox' %}">← Retour à la boîte de réception</a></p>
